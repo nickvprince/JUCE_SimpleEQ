@@ -26,10 +26,10 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
 
 	auto enabled = slider.isEnabled();
 
-	g.setColour(enabled ? Colour(97u, 18u, 167u) : Colours::darkgrey);
+	g.setColour(enabled ? Colour(100u, 100u, 192u) : Colours::darkgrey);							// Colour of Rotary Dial Fill
 	g.fillEllipse(bounds);
 	
-	g.setColour(enabled ? Colour(255u, 154u, 1u) : Colours::grey);
+	g.setColour(enabled ? Colour(75u, 50u, 110u) : Colours::grey);									// Colour of Rotary Dial Notch and Border
 	g.drawEllipse(bounds, 1.f);
 
 	if (auto* rswl = dynamic_cast<RotarySliderWithLabels*>(&slider)) {
@@ -61,7 +61,7 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
 		r.setSize(strWidth + 4, rswl->getTextHeight() + 2);
 		r.setCentre(bounds.getCentre());
 		
-		g.setColour(enabled ? Colours::white : Colours::grey);
+		g.setColour(enabled ? Colours::white : Colours::grey);										// Colour of Rotary Dial Inner Text
 		g.drawFittedText(text, r.toNearestInt(), juce::Justification::centred, 1);
 
 	}
@@ -102,14 +102,14 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
 
 		PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
 
-		auto colour = toggleButton.getToggleState() ? Colours::dimgrey : Colour(0u, 172u, 1u);
+		auto colour = toggleButton.getToggleState() ? Colours::dimgrey : Colour(100u, 150u, 200u);		// Colour of Power (bypass) Buttons
 
 		g.setColour(colour);
 		g.strokePath(powerButton, pst);
 		g.drawEllipse(r, 2);
 	} else if (auto* analyzerButton = dynamic_cast<AnalyzerButton*>(&toggleButton)) {
 
-		auto colour = ! toggleButton.getToggleState() ? Colours::dimgrey : Colour(0u, 172u, 1u);
+		auto colour = ! toggleButton.getToggleState() ? Colours::dimgrey : Colour(200u, 200u, 200u);	// Colour of Analyzer Button
 		g.setColour(colour);
 
 		auto bounds = toggleButton.getLocalBounds();
@@ -150,7 +150,7 @@ void RotarySliderWithLabels::paint(juce::Graphics& g) {
 	auto center = sliderBounds.toFloat().getCentre();
 	auto radius = sliderBounds.getWidth() * 0.5f;
 
-	g.setColour(Colour(0u, 172u, 1u));
+	g.setColour(Colours::white);																	// Colour of Text outside Rotary Dials
 	g.setFont(getTextHeight());
 
 	auto numChoices = labels.size();
@@ -354,7 +354,7 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 	using namespace juce;
 
 	// (Our component is opaque, so we must completely fill the background with a solid colour)
-	g.fillAll(Colours::black);
+	g.fillAll(Colours::black);																																
 
 	g.drawImage(background, getLocalBounds().toFloat());
 
@@ -423,20 +423,20 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 		auto leftChannelFFTPath = leftPathProducer.getPath();
 		leftChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY()));
 
-		g.setColour(Colours::darksalmon);
+		g.setColour(Colours::darksalmon);															// Colour of Left FFT (Analyzer) Path
 		g.strokePath(leftChannelFFTPath, PathStrokeType(1.f));
 
 		auto rightChannelFFTPath = rightPathProducer.getPath();
 		rightChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY()));
 
-		g.setColour(Colours::cornsilk);
+		g.setColour(Colours::cornsilk);																// Colour of Right FFT (Analyzer) Path
 		g.strokePath(rightChannelFFTPath, PathStrokeType(1.f));
 	}
 
-	g.setColour(Colours::orange);
+	g.setColour(Colours::orange);																	// Colour of Analyzer Border 
 	g.drawRoundedRectangle(getRenderArea().toFloat(), 4.f, 1.f);
 
-	g.setColour(Colours::white);
+	g.setColour(Colours::white);																	// Colour of Response Curve
 	g.strokePath(responseCurve, PathStrokeType(2.f));
 
 }
@@ -469,7 +469,7 @@ void ResponseCurveComponent::resized() {
 	}
 
 
-	g.setColour(Colours::dimgrey);
+	g.setColour(Colours::dimgrey);																	// Colour of Vertical Freq Graph Lines
 
 	for (auto x : xs) {
 		g.drawVerticalLine(x, top, bottom);
@@ -481,11 +481,11 @@ void ResponseCurveComponent::resized() {
 
 	for (auto gDb : gain) {
 		auto y = jmap(gDb, -24.f, 24.f, float(bottom), float(top));
-		g.setColour(gDb == 0.f ? Colour(0u, 172u, 1u) : Colours::darkgrey);
+		g.setColour(gDb == 0.f ? Colour(0u, 172u, 1u) : Colours::darkgrey);							// Colour of Horizontal DB Graph Lines
 		g.drawHorizontalLine(y, left, right);
 	}
 
-	g.setColour(Colours::lightgrey);
+	g.setColour(Colours::lightgrey);																// Colour of Freq Graph Text
 	const int fontHeight = 10;
 	g.setFont(fontHeight);
 
@@ -532,7 +532,7 @@ void ResponseCurveComponent::resized() {
 		r.setX(getWidth() - textWidth);
 		r.setCentre(r.getCentreX(), y);
 
-		g.setColour(gDb == 0.f ? Colour(0u, 172u, 1u) : Colours::lightgrey);
+		g.setColour(gDb == 0.f ? Colour(0u, 172u, 1u) : Colours::lightgrey);						// Colour of Gain Db Graph Text (Right Side)
 
 		g.drawFittedText(str, r, juce::Justification::centred, 1);
 
@@ -542,7 +542,7 @@ void ResponseCurveComponent::resized() {
 		r.setX(1);
 		textWidth = g.getCurrentFont().getStringWidth(str);
 		r.setSize(textWidth, fontHeight);
-		g.setColour(Colours::lightgrey);
+		g.setColour(Colours::lightgrey);															// Colour of LeftSide Graph Text
 		g.drawFittedText(str, r, juce::Justification::centred, 1);
 	}
 
@@ -680,7 +680,7 @@ void SimpleEQAudioProcessorEditor::paint (juce::Graphics& g)
 	using namespace juce;
 
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (Colours::black);
+    g.fillAll (Colour(30u, 41u, 51u));																			// Colour of Background (No Analyzer)
 	
 }
 
