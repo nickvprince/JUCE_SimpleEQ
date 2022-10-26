@@ -181,6 +181,8 @@ ResponseCurveComponent::ResponseCurveComponent(SimpleEQAudioProcessor& p) : audi
 		param->addListener(this);
 	}
 
+	updateChain();
+
 	startTimerHz(60);
 }
 
@@ -199,19 +201,25 @@ void ResponseCurveComponent::timerCallback() {
 	if (parametersChanged.compareAndSetBool(false, true)) {
 
 		//update monochain
-		auto chainSettings = getChainSettings(audioProcessor.apvts);
-		auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
-		updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
-
-		auto lowCutCoefficients = makeLowCutFilter(chainSettings, audioProcessor.getSampleRate());
-		auto highCutCoefficients = makeHighCutFilter(chainSettings, audioProcessor.getSampleRate());
-
-		updateCutFilter(monoChain.get<ChainPositions::LowCut>(), lowCutCoefficients, chainSettings.lowCutSlope);
-		updateCutFilter(monoChain.get<ChainPositions::HighCut>(), highCutCoefficients, chainSettings.highCutSlope);
+		updateChain();
 
 		//single a repaint so new responsecurve is drawn
 		repaint();
 	}
+}
+
+void ResponseCurveComponent::updateChain() {
+
+	auto chainSettings = getChainSettings(audioProcessor.apvts);
+	auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
+	updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+
+	auto lowCutCoefficients = makeLowCutFilter(chainSettings, audioProcessor.getSampleRate());
+	auto highCutCoefficients = makeHighCutFilter(chainSettings, audioProcessor.getSampleRate());
+
+	updateCutFilter(monoChain.get<ChainPositions::LowCut>(), lowCutCoefficients, chainSettings.lowCutSlope);
+	updateCutFilter(monoChain.get<ChainPositions::HighCut>(), highCutCoefficients, chainSettings.highCutSlope);
+
 }
 
 void ResponseCurveComponent::paint(juce::Graphics& g)
