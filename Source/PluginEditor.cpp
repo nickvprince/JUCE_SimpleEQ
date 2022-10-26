@@ -59,8 +59,8 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
 		r.setSize(strWidth + 4, rswl->getTextHeight() + 2);
 		r.setCentre(bounds.getCentre());
 
-		g.setColour(Colours::black);
-		g.fillRect(r);
+		//g.setColour(Colours::black);
+		//g.fillRect(r);
 		
 		g.setColour(Colours::white);
 		g.drawFittedText(text, r.toNearestInt(), juce::Justification::centred, 1);
@@ -80,10 +80,10 @@ void RotarySliderWithLabels::paint(juce::Graphics& g) {
 
 	auto sliderBounds = getSliderBounds();
 
-	g.setColour(Colours::red);
-	g.drawRect(getLocalBounds());
-	g.setColour(Colours::yellow);
-	g.drawRect(sliderBounds);
+	//g.setColour(Colours::red);
+	//g.drawRect(getLocalBounds());
+	//g.setColour(Colours::yellow);
+	//g.drawRect(sliderBounds);
 
 	getLookAndFeel().drawRotarySlider(g, 
 									sliderBounds.getX(), 
@@ -114,7 +114,38 @@ juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const {
 }
 
 juce::String RotarySliderWithLabels::getDisplayString() const {
-	return juce::String(getValue());
+	
+	if (auto* choiceParam = dynamic_cast<juce::AudioParameterChoice*>(param)) {
+		return choiceParam->getCurrentChoiceName();
+	}
+
+	juce::String str;
+	bool addK = false;
+
+	if (auto* floatParam = dynamic_cast<juce::AudioParameterFloat*>(param)) {
+		
+		float val = getValue();
+		if (val > 999.f) {
+			val /= 1000.f;
+			addK = true;
+		} 
+
+		str = juce::String(val, (addK ? 2 : 0));
+
+	} else {
+		jassertfalse; // this shouldn't happen because there are only float params in this project ( just to be safe :) )
+	}
+
+	if (suffix.isNotEmpty()) {
+		str << " ";
+		if (addK)
+			str << "k";
+
+		str << suffix;
+	}
+
+	return str;
+
 }
 
 //==============================================================================
