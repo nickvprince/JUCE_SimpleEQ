@@ -308,7 +308,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleEQAudioProcessor::crea
 	for (int i = 0; i < 4; i++) {
 		juce::String str;
 		str << (12 + i * 12);
-		str << " db/Oct";
+		str << " dB/Oct";
 		stringArray.add(str);
 	}
 
