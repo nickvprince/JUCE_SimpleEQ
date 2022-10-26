@@ -132,6 +132,17 @@ void SimpleEQAudioProcessorEditor::resized()
 
 }
 
+void SimpleEQAudioProcessorEditor::parameterValueChanged(int parameterIndex, float newValue) {
+	parametersChanged.set(true);
+}
+
+void SimpleEQAudioProcessorEditor::timerCallback() {
+	if (parametersChanged.compareAndSetBool(false, true)) {
+		//update monochain
+		//single a repaint so new responsecurve is drawn
+	}
+}
+
 std::vector<juce::Component*> SimpleEQAudioProcessorEditor::getComps() {
 	return {
 		&peakFreqSlider,
